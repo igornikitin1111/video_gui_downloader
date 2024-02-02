@@ -5,7 +5,6 @@ import os
 
 def download_video():
     url = entry_url.get()
-    resolution = resolutions_var.get()
 
     progress_bar.pack()
     progress_label.pack()
@@ -13,7 +12,7 @@ def download_video():
 
     try:
         yt = YouTube(url, on_progress_callback=on_progress)
-        stream=yt.streams.filter(res=resolution).first()
+        stream=yt.streams.filter(progressive=True).get_highest_resolution()
 
         #download video into a specific directory
         os.path.join("downloads", f"{yt.title}.mp4")
@@ -53,22 +52,12 @@ content_frame.pack(fill=ctk.BOTH, expand=True, padx=10, pady=10)
 #create a label and the entry widget for the video url
 url_label = ctk.CTkLabel(content_frame, text="Enter the youtube url here: ")
 entry_url = ctk.CTkEntry(content_frame, width=400, height=40)
-
-# url_label.pack(pady=("10p", "5p"))
-# entry_url.pack(pady=("10p", "5p"))
-url_label.pack()
-entry_url.pack()
+url_label.pack(pady=10)
+entry_url.pack(pady=10)
 
 #create a download button
 download_button = ctk.CTkButton(content_frame, text="Download", command=download_video)
-download_button.pack()
-
-#create a resolutions combo box
-resolutions = ["720p", "360p", "240p"]
-resolutions_var = ctk.StringVar()
-resolutions_combobox = ttk.Combobox(content_frame, values=resolutions, textvariable=resolutions_var)
-resolutions_combobox.pack()
-resolutions_combobox.set("720p") #default value set 720px
+download_button.pack(pady=10)
 
 #create a label and the progress bar to display the download progress
 progress_label = ctk.CTkLabel(content_frame, text="0%")
@@ -76,11 +65,9 @@ progress_label = ctk.CTkLabel(content_frame, text="0%")
 
 progress_bar = ctk.CTkProgressBar(content_frame, width=400)
 progress_bar.set(0)
-# progress_bar.pack()
 
 #create status label
 status_label = ctk.CTkLabel(content_frame, text="")
-# status_label.pack()
 
 #to start the app
 root.mainloop()
